@@ -1,0 +1,14 @@
+{
+  "quandary-sources": [
+    {
+      "procedure": "getenv",
+      "kind": "Logging"
+    }
+  ],
+  "quandary-sinks": [
+    {
+      "procedure": "atoi",
+      "kind": "Logging"
+    }
+  ]
+}

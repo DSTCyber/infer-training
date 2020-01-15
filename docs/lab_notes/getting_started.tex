@@ -1,0 +1,164 @@
+\section{Getting Started}
+
+\subsection{Infer Installation Using Docker}
+
+This section we are going to install Infer and the three audit targets
+using Docker.
+The purpose of using Docker is to avoid spending unnecessary time 
+on resolving configuration and dependency issues with the tool and 
+the various targets.
+However in the appendix we show how to install and configure Infer 
+natively for a Linux system.
+
+These notes are on how to use Docker to do this lab. 
+
+\dothis{Install and Run the Infer Docker}
+
+
+\noindent From the root of the lab repo: 
+
+\begin{verbatim}
+# Create our lab directory to share files with host
+mkdir ./lab
+
+# Install and configure Docker on Ubuntu
+sudo apt install docker.io
+sudo usermod -aG docker ${USER}
+su - ${USER}
+git clone https://github.com/smagrath/infer-training
+cd infer-training
+
+# Build a docker image from the Dockerfile in sub-dir ```lab```
+# Tag it infer-training 
+docker build -t infer-training .
+
+# Create a new container based on the image above 
+# mount the host sub-dir ```content``` into the container 
+docker create -it -v `pwd`/lab:/root/lab --name infer infer-training
+
+# Boot the container
+docker start infer
+
+# Run a terminal in the container
+docker exec -it infer /bin/bash
+
+# In the Docker terminal run the configure script.
+# This script pulls down and "patches" the audit targets.
+cd lab
+./configure.sh
+\end{verbatim}
+
+You now have a running Docker container with Infer and the three audit targets
+installed and configured along with their dependencies. 
+Also, the host and the Docker container share a common sub-directory on
+which allows files to be transferred to the host machine.
+This shared directory is the \verb|./lab| directory of this training repo. 
+The main reason for doing this is so we can use the host OS's web browser
+to view the Infer reports and other data files.
+The Docker image has no GUI support.
+
+When you're finished with your Docker image complete the following:
+
+\begin{verbatim}
+# docker stop infer
+# docker rm infer
+# docker rmi infer-training
+\end{verbatim}
+
+This will stop the Docker container and delete the Infer image from the host machine.
+
+\section{Audit Targets}
+
+We will use the following three Linux games to explore Infer.
+
+\begin{itemize}
+	\itemsep0em 
+	\item \textbf{Angband} - \verb|https://rephial.org/|
+	\item \textbf{Skynet} - \verb|https://github.com/cloudwu/skynet|
+	\item \textbf{BSDGames} - \verb|https://github.com/vattam/BSDGames|
+\end{itemize}
+
+The targets were chosen because together they exhibit a good diversity of bugs
+and have modest build and analysis requirements. 
+Some targets because of size and complexity issues require large amounts of 
+memory (i.e. more than 16 GB) and compute time (i.e. more than 10 minutes) which is not appropriate
+for the typical resources available for this lab.
+
+The Docker container has the build systems, source code and library dependencies
+already installed. 
+However we have included in the Appendix the process to build the targets 
+from scratch for the purpose of being analysed by Infer.
+
+Infer uses Clang and therefore the targets must be buildable with Clang.
+Moreover Infer hooks several build tools such as \verb|make|, however
+it can take a bit of effort to get Infer to work with tools like \verb|CMake|.
+We look at how this down in TODO.
+
+In practice you should not under-estimate how much effort is required to 
+properly prepare a target for Infer. Your goal is to maximise analysis
+coverage which means that you need to configure the target build system 
+to use as many features and libraries as possible. 
+Recursively, you should consider analysing the source code of the library dependencies
+as well.
+
+In the following subsections we will complete the build configuration for the
+targets.
+We could have scripted this work however this is not helpful to you.
+Part of using Infer effectively is understanding and controlling the build
+process of the audit targets intimately.
+
+\subsection{Angband}
+
+In the Docker terminal:
+
+\dothis{Verify you can build Angband}
+
+
+\begin{verbatim}
+$ cd angband-4.2.0
+$ CC=clang CXX=clang++ ./configure --enable-sdl2
+$ make
+\end{verbatim}
+
+The build should complete successfully with no errors.
+
+\subsection{Skynet}
+
+We are going to build \verb|Skynet|. 
+I've always wanted to build Skynet.
+I've always wanted to ride a Harley-Davidson, wear a leather jacket and 
+wield a sawn-off shotgun. I look cool in sun-glasses too.
+
+To build Skynet we need to explicitly identify that it is a \verb|linux| 
+build configuration. You will need to remember this throughout the course.
+
+In the Docker terminal:
+
+\dothis{Verify you can build Skynet}
+
+\begin{verbatim}
+$ cd skynet
+$ CC=clang CXX=clang++ make linux
+\end{verbatim}
+
+The build should complete successfully with no errors.
+
+\subsection{BSDGames}
+
+We will need to manually edit (using Vim) the \verb|Makeconfig| file to use Clang instead of GCC.
+The usual method of setting environment variables is ineffective.
+
+In the Docker terminal:
+
+\dothis{Verify you can build BSDGames}
+
+\begin{verbatim}
+$ cd bsdgames
+$ ./configure
+$ vim ./Makeconfig
+# --> change the compilers from GCC/G++ to Clang/Clang++
+$ make
+\end{verbatim}
+
+The build should complete successfully with no errors however you will 
+see plenty of warnings. It's old code.

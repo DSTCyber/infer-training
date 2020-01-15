@@ -1,0 +1,133 @@
+\section{Lab Three: Quandary}
+
+Quandary is an experimental checker in Infer. 
+It performs \textit{static taint analysis}, also called \textit{source-sink} analysis.
+The essential idea is that you can specify a \textit{data-flow} between a
+\begin{itemize}
+	\item \textbf{source} function - that is the return value of the function;
+	\item \textbf{sink} function: to a specific argument or any argument of that function.
+\end{itemize} 
+
+This is a really interesting checker from a security auditing perspective. 
+For example, it allows you to specify a test from attacker-controlled data 
+(for example, environment variables) to security sensitive functions (for example, \texttt{execve} functions).
+
+For technical reasons this is also an impressive checker because it does this 
+analysis \textit{statically} and efficiently.
+
+\subsection{Running Quandary}
+
+Like all checkers , we can run \textit{Quandary} as an additional analysis \textit{or} on its own.
+
+\begin{itemize}
+	\item As an \textbf{additional} checker: \\
+	\verb|# infer run --quandary --keep-going -- make |
+	\item \textbf{Inferbo only}:\\
+	\verb|# infer run --quandary-only --keep-going -- make |	
+\end{itemize}
+
+\exercise{Working with Quandary - Part One}
+
+\vspace{0.5cm}
+For each of the targets run Quandary on its own and generate HTML bug reports.
+Open each of the bug reports and examine the various bug \textit{classes}.
+Start with \texttt{BSDGames} in this example.
+
+\textbf{Remember: }
+\begin{itemize}
+	\item Delete any previous Infer data:\\
+	\verb|# rm -rf ./infer-out| \\
+	Otherwise the results of previous analysis may leak into the reports.
+	\item Clean the build:\\
+	\verb|# make clean|\\
+	Otherwise Infer won't analyze anything.
+\end{itemize}
+
+You should see a summary like:
+
+\begin{verbatim}
+...
+Summary of the reports
+
+SHELL_INJECTION: 4
+\end{verbatim}
+
+By default, Quandary looks for data-flows between environment variables (as returned by \texttt{gentenv()})
+and the \texttt{execve()} functions. These data-flows represent command injection vulnerabilities if there
+is no sanitisation of the environment variable.
+
+\exercise{Working with Quandary - Part Two}
+
+\vspace{0.5cm}
+In this example we are going to define our own source-sink data-flow we are interested in.
+
+\begin{itemize}
+	\item Create the following JSON file: \texttt{.inferconfig} in the root of the target 
+	repo.
+	\item Insert the following contents:\\
+	\noindent\begin{verbatim}
+    {
+        "quandary-sources": [
+        {
+            "procedure": "getenv",
+            "kind": "Logging"
+        }
+        ],
+        "quandary-sinks": [
+        {
+            "procedure": "atoi",
+            "kind": "Logging"
+         }
+         ]
+    }	
+	\end{verbatim}
+	\item Re-run the Quandary analysis:\\
+	\verb|# infer run --keep-going --quandary-only -- make |
+\end{itemize}
+
+\textbf{Remember: }
+\begin{itemize}
+	\item Delete any previous Infer data:\\
+	\verb|# rm -rf ./infer-out| \\
+	Otherwise the results of previous analysis may leak into the reports.
+	\item Clean the build:\\
+	\verb|# make clean|\\
+	Otherwise Infer won't analyze anything.
+\end{itemize}
+
+You should see a summary like:
+
+\begin{verbatim}
+...
+Summary of the reports
+
+SHELL_INJECTION: 4
+QUANDARY_TAINT_ERROR: 3
+\end{verbatim}
+
+In this example we have picked three examples of a data-flow between an environment variable
+and a function we defined as interesting: \verb|atoi()|. This is an interesting flow because
+the function \verb|atoi()| has no error handling and fails silently. 
+If you click on the trace for these reports you should indeed see an actual data-flow analysis
+that reveals a bug. In fact any use of the function \verb|atoi()| should be considered a bug
+however when confronted with lots of bugs these ones found by Quandary should be prioritised.
+
+It is also possible to be specific about \textit{which argument} of the sink function you want 
+to trace. By default, a data-flow to \textit{any argument} of the sink function triggers a report.
+
+\todo{show how to specify this flow}
+
+\subsection{Review}
+
+What have we learnt so far?
+
+\begin{itemize}
+	\item Quandary is a static taint tracing checker;
+	\item Quandary finds by default potential \textit{command injection} vulnerabilities;
+	\item How to create our own source-sink analyses using the JSON file \verb|.inferconfig|
+\end{itemize}
+
+
+\subsection{What Next?}
+
+In the next section we are going to learn how to use Infer's \textit{linting} capabilities.

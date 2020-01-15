@@ -1,0 +1,85 @@
+\section{Lab Two: Inferbo}
+
+The purpose of this lab is to use Infer to find:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{Integer Bugs} - overflows, sign vs unsigned bugs, sign extension bugs etc;
+	\item \textbf{Buffer Overflows}: memory corruption bugs	
+\end{itemize}
+
+Infer uses an experimental checker called ``Inferbo'' to do this analysis. 
+This checker uses Abstract Interpretation Theory to analyse the effects of integer expressions
+and their application to memory structures such as arrays.
+
+\subsection{Running Inferbo}
+
+Like all checkers , we can run \textit{Inferbo} as an additional analysis \textit{or} on its own.
+
+\begin{itemize}
+	\item As an \textbf{additional} checker: \\
+	\verb|# infer run --bufferoverun -- make |
+	\item \textbf{Inferbo only}:\\
+	\verb|# infer run --bufferoverrun-only -- make |	
+\end{itemize}
+
+\exercise{Working with Inferbo}
+
+\vspace{0.5cm}
+For each of the targets run Inferbo on its own and generate HTML bug reports.
+Open each of the bug reports and examine the various bug \textit{classes}.
+
+\textbf{Remember: }
+\begin{itemize}
+	\item Delete any previous Infer data:\\
+	\verb|# rm -rf ./infer-out| \\
+	Otherwise the results of previous analysis may leak into the reports.
+	\item Clean the build:\\
+	\verb|# make clean|\\
+    Otherwise Infer won't analyze anything.
+\end{itemize}
+
+You should see a summary like:
+\begin{verbatim}
+	...	
+	
+	Summary of the reports
+	
+	BUFFER_OVERRUN_L3: 14
+	BUFFER_OVERRUN_L2: 9
+	INFERBO_ALLOC_MAY_BE_BIG: 9
+	INTEGER_OVERFLOW_L2: 8
+	INFERBO_ALLOC_IS_ZERO: 4
+	INFERBO_ALLOC_MAY_BE_NEGATIVE: 1
+	INTEGER_OVERFLOW_R2: 1
+	BUFFER_OVERRUN_L1: 1	
+\end{verbatim}
+
+Notice that the various bug classes have suffixes like "L1" and "L3". 
+I'm not exactly sure what they mean but I strongly suspect that they relate 
+to specific class variations of a bug that is being reported.
+
+A few specific things to know:
+\begin{itemize}
+	\itemsep0em
+	\item \textbf{Understanding Traces}: The first few lines of a \verb|BUFFER_OVERRUN| trace are very important. It tells you why it thinks there is a memory error. For example:\\
+	\verb|Offset: [3, 18] Size: 16| is interpreted as the buffer is sized 16 but the index range is predicted by analysis to vary between 3 and 18. 
+	\item \textbf{Confusing arithmetic}: Some maths expressions seem to confuse Infer and therefore
+	the range calculations seem to be in error. In particular bit operations and union structures seem a problem.
+	\item \textbf{Precision}: Remember this is \textit{static} analysis. Runtime execution may
+	be protective of the problem identified. However, a lot of bug reports would be eliminated if
+	the source code had proper bounds checking in place.
+\end{itemize}
+
+In particular examine the following interesting \textit{specific} bugs:
+\begin{itemize}
+	\item \todo{list interesting bugs}
+\end{itemize}
+
+\subsection{What have we learnt so far?}
+
+\todo{some wise words}
+
+\subsection{What Next?}
+
+The next section we will look at \textit{Quandary} - a static source-sink or taint checker.
+

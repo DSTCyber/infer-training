@@ -1,0 +1,43 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color, colortbl}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\rhead{\leftmark}
+\lhead{Using Infer}
+\rfoot{Page \thepage}
+
+%%%%% COMMANDS
+\newcommand{\exercise}[1]{\vspace{1cm} \color{blue} \framebox[1.1\width]{\textbf{\textsc{Exercise:} #1}}\color{black}}
+
+\newcommand{\todo}[1]{\color{red} \textbf{\textsc{TODO:} #1 }\color{black}}
+
+\newcommand{\dothis}[1]{\vspace{1cm} \color{blue} \framebox[1.1\width]{\textbf{\textsc{Complete the Following:} #1}}\color{black}}
+
+\newcommand{\note}[1]{\noindent\fbox{\parbox{\textwidth}{\textbf{NOTE:} #1} }}
+%%%%%%%%%%%%%%%
+
+\author{Shane Magrath}
+\title{Using Infer to Find Bugs: \\Lab Directed Training}
+
+\begin{document}
+
+\maketitle
+\include{introduction}
+\include{getting_started}
+\include{Lab_One_Basic_Usage}
+\include{Lab_Two_Inferbo}
+\include{Lab_Three_Quandary}
+\include{Lab_Four_Linting}
+\include{appendix}
+
+
+\end{document}

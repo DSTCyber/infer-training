@@ -1,0 +1,197 @@
+\appendix
+
+\section{Installing Infer}
+
+
+We will download and install Infer without using Docker. 
+We assume you are using Ubuntu as your OS environment.
+
+We are going to install Infer. Normally you would follow the instructions on Infer's 
+"Getting Started" website - \verb|https://fbinfer.com/docs/getting-started.html| - 
+however in my experience the documented process never worked.
+
+\dothis{Installing Infer}
+\begin{enumerate}
+	\itemsep0em 
+	\item Download the version 0.17.0 tarball from Github:\\
+	\verb|https://github.com/facebook/infer/releases|
+	\item Extract it in a home directory \\
+	\verb|# cd ~/bin && tar xvf infer-0.17.0.tar.gz |
+	\item Add the Infer binary to the PATH environment in \verb|.bashrc|
+	\begin{verbatim}
+	PATH=~/bin/infer/bin:$PATH	
+	export PATH
+	\end{verbatim}
+	\item Test that your installation runs. In a \textbf{new shell} run Infer - you should see the following
+	\begin{verbatim}
+	# infer
+	Nothing to compile. Have you run `infer capture`? Try cleaning the build first.
+	There was nothing to analyze.
+	
+	No issues found 	 
+	\end{verbatim}
+	\item Ensure that the Infer man pages are accessible by running the following command:\\
+	\verb|# man infer|\\
+	The man pages are very comprehensive but also somewhat confusing. Another source of
+	information is the Infer documentation web page - \verb|https://fbinfer.com/docs/getting-started.html|. There are a number of important pages that cover more advanced operations. \\
+	\todo{check man page installation}
+\end{enumerate}
+
+That completes the Infer installation. 
+
+\section{Building the Audit Targets Natively}
+
+We will use the following three Linux games to explore Infer.
+
+\begin{itemize}
+	\itemsep0em 
+	\item \textbf{Angband} - \verb|https://rephial.org/|
+	\item \textbf{Skynet} - \verb|https://github.com/cloudwu/skynet|
+	\item \textbf{BSDGames} - \verb|https://github.com/vattam/BSDGames|
+\end{itemize}
+
+The targets were chosen because together they exhibit a good diversity of bugs
+and have modest build and analysis requirements. 
+Some targets because of size and complexity issues require large amounts of 
+memory (i.e. > 16 GB) and compute time (i.e. > 10 minutes) which is not appropriate
+for the typical resources available for this lab.
+
+For the purposes of the lab we provide the source code tarballs required. The reason
+for this is to make sure we are auditing the same fixed version of code with known bugs.
+
+\subsubsection{Angband}
+
+We are going to download, extract and build the game from source code.
+
+\dothis{Build Angband - Part One}
+
+\begin{enumerate}
+	\itemsep0em
+	\item Make an audit directory\\
+	\verb|# mkdir ~/audit|
+	\item Download and move the game into the audit directory- TODO 
+	\item Extract it\\
+	\verb|# tar xvf angband-4.2.0.tar.gz|
+	\item Change directory to the root of the game repo	\\
+	\verb|# cd angband-4.2.0|	
+\end{enumerate}
+
+At this point we need to investigate how to build the game.
+Run the following command to examine what build options are available.
+
+\vspace{0.5cm}
+
+\note{In principle you would want to enable as many of the options that make sense in order to be able to analyse as much of the code base as possible.}
+
+\vspace{0.5cm}
+Examine the options available in building the code:
+
+\begin{verbatim}
+# ./configure --help 
+
+...
+
+Optional Features:
+--disable-option-checking  ignore unrecognized --enable/--with options
+--disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+--enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+--enable-curses         Enables Curses frontend (default: enabled)
+--enable-x11            Enables X11 frontend (default: enabled)
+--enable-sdl2           Enables SDL2 frontend (default: disabled)
+--enable-sdl            Enables SDL frontend (default: disabled)
+--enable-win            Enables Windows frontend (default: disabled)
+--enable-test           Enables test frontend (default: disabled)
+--enable-stats          Enables stats frontend (default: disabled)
+--enable-sdl2-mixer     Enables SDL2 mixer sound support (default: disabled
+unless SDL2 enabled)
+--enable-sdl-mixer      Enables SDL mixer sound support (default: disabled
+unless SDL enabled)
+--disable-ncursestest       Do not try to compile and run a test ncurses program
+--disable-sdl2test       Do not try to compile and run a test SDL2 program
+--disable-sdltest       Do not try to compile and run a test SDL program
+
+Optional Packages:
+--with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+--without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+--with-setgid=NAME      install angband as group NAME
+--with-private-dirs     use private scorefiles/savefiles
+--with-no-install       don't install, just run in-place
+--with-ncurses-prefix=PFX   Prefix where ncurses is installed (optional)
+--with-ncurses-exec-prefix=PFX Exec prefix where ncurses is installed (optional)
+--with-x                use the X Window System
+--with-sdl2-prefix=PFX   Prefix where SDL2 is installed (optional)
+--with-sdl2-exec-prefix=PFX Exec prefix where SDL2 is installed (optional)
+--with-sdl-prefix=PFX   Prefix where SDL is installed (optional)
+--with-sdl-exec-prefix=PFX Exec prefix where SDL is installed (optional)
+
+\end{verbatim}
+\dothis{Build Angband - Part Two}
+
+\vspace{0.5cm}
+
+Now we need to test that we can properly build the game such that Infer can analyse it:
+
+\begin{enumerate}
+	\item \todo{check - we need to make sure Clang and all the libraries are installed}
+	\item\textbf{ Build Configuration}: In this case we will configure the build systems as follows:\\
+	\verb|# CC=clang CXX=clang++ ./configure --enable-sdl2|
+	\item \textbf{Build}: Make sure that Clang is being used to compile the code.\\
+	\verb|# make| \\
+	There should be no errors.
+\end{enumerate}\
+
+\subsubsection{Skynet}
+
+We are going to download, extract and build the game from source code.
+
+\dothis{Build Skynet}
+
+\begin{enumerate}
+	\itemsep0em
+	\item Download and move the game into the audit directory- TODO 
+	\item Extract it\\
+	\verb|# tar xvf skynet.tar.gz|
+	\item \todo{Install dependencies (detail ...)}
+	\item Change directory to the root of the game repo	\\
+	\verb|# cd skynet|	
+	\item Build the code:\\
+	\verb|# CC=clang CXX=clang++ make linux|
+\end{enumerate}
+
+Verify that the code was built without errors and that the compilation used Clang.
+
+\subsubsection{BSDGames}
+
+We are going to download, extract and build the game from source code.
+
+\dothis{Build BSDGames}
+
+\begin{enumerate}
+	\itemsep0em
+	\item Download and move the game into the audit directory- TODO 
+	\item Extract it\\
+	\verb|# tar xvf BSDgames.tar.gz|
+	\item \todo{Install the library dependencies: ncurses, Lex, Yacc, libcrypto}
+	\item Change directory to the root of the game repo	\\
+	\verb|# cd BSDGames|	
+	\item Run the build configuration tool:\\
+	\verb|# ./configure|
+	\item Edit the file \verb|./Makeconfig|\\
+	Change the compilers from \verb|gcc/g++| to \verb|clang/clang++|\\
+	Note: the usual method for specifying the compilers as environment variables does not seem effective.
+	\item Build the code:\\
+	\verb|# make |\\
+	You \textbf{will} see compilation problems but this seems to be expected with this repo.
+\end{enumerate}
+
+Verify that the code was mostly built without errors and that the compilation used Clang.
+
+\vspace{1cm}
+
+At this point we have prepared a set of targets ready for analysis with Infer.
+In practice you should not underestimate the effort required to properly prepare
+the target build system for analysis. 
+You would normally try to enable as many build options
+as possible to maximise the amount of code that can be analysed. 
+Depending on your objectives you may also want to build and analyse the library dependencies as well.
+
