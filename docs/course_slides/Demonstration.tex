@@ -1,0 +1,42 @@
+\begin{frame}{Understanding the Reports}
+	Understanding Infer's bug reports:
+	\begin{itemize}
+		\item Static analysis is about \textit{all possible} executions\\
+		NOT \textit{actual executions} that are constrained by runtime behaviours.
+		\item\textbf{Think: "Could this be a \textit{plausible} execution?"}
+		\item Infer makes mistakes!\\
+		Certain checkers are terrible ...
+		\item Some syntactic constructs in C confuse the checkers\\
+		Incomplete and buggy implementation
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How to use Infer}
+To use Infer productively:
+\begin{itemize}
+	\item Learn to triage the bug reports efficiently
+	\item Read the first and last lines of each bug report\\
+	Ignore the middle!
+	\item Look for code smell in functions and translation units\\
+	Bugs patterns are repeated by the same author...
+	\item Think: Can we fuzz this?\\
+	Combine static analysis with dynamic testing ...
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Getting Started!}
+Setup the training environment: 
+\begin{itemize}
+	\item \textbf{Source the training:}
+	\url{https://github.com/DSTCyber/infer-training}
+	\item \textbf{Create a working directory for the training}
+	\item \textbf{Get the training material } 
+	\url{https://github.com/DSTCyber/infer-training.git}
+	\item \textbf{Open the lab notes:}
+	\url{/infer-training/docs/lab/infer_training_lab.pdf}
+	\item Get started!
+\end{itemize} 
+\end{frame}
+
+
+

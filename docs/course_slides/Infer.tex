@@ -1,0 +1,53 @@
+
+\begin{frame}{Infer: An Introduction}
+\begin{columns}
+	\begin{column}{0.5\textwidth}
+		Infer is
+		\begin{itemize}
+			\item a \textbf{static analysis} tool for \textbf{finding bugs} in software
+			\item for C, C++, Objective C, and Java (Servers and Mobile Apps)
+			\item on very large code bases
+			\item using continuous integration processes
+			\item with a reputation for finding \textit{thousands} of bugs a month
+			\item and is used by Facebook, Uber, Spotify, ...
+		\end{itemize}
+	\end{column}
+	\begin{column}{0.5\textwidth}  %%<--- here
+		Timeline:
+		\begin{itemize}
+			\item \textbf{2000s}: Queen Mary University: Seperation Logic and Bi-Abduction - Cristiano Calcagno, Dino Distefano and Peter O'Hearn 
+			\item \textbf{2009}: Monoidics startup
+			\item \textbf{2013}: Facebook buys out Monoidics
+			\item \textbf{2015}: Facebook open sources Infer
+		\end{itemize}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Infer: What makes it useful?}
+	How does it do it?
+	\begin{itemize}
+		\item Compositional program analysis - analyzes procedures independently  to
+		\item Produce logical summaries, using the theories of 
+		\item \textbf{Abstract Interpretation}: "Inferbo"
+		\\eg intervals domains, bitvector arithmetic domains, etc
+		\item \textbf{Separation Logic} using Bi-abduction
+		\item \textbf{Source-Sink Analysis} - "Quandary"
+		\item \textbf{Linting} - "AL" 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Infer: How does it work?}
+
+\textbf{Operations:}
+
+\begin{itemize}
+	\item Infer \textit{hooks} the \textit{compilation} process
+	\item Processes the parsing phases: \\Parse Tree, AST, Use-Defs, Control Flow Graphs\\
+	Type Information, Data Flow
+	\item Parse data is analyzed, summarised and stored
+	\item Then a set of \textbf{checkers} and \textbf{linters} are applied 
+	\item produce bug reports
+\end{itemize}
+
+\end{frame}

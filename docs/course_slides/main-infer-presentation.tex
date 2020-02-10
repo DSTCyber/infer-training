@@ -1,0 +1,95 @@
+\documentclass{beamer}
+
+\usepackage{default}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{ifthen}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{subcaption}
+%\usepackage{bm}
+%\usepackage{subfigure}
+%\usepackage{subfig}
+\usepackage{placeins}
+\usepackage{url}
+\usepackage[]{algorithm2e}
+
+\usetheme{Warsaw}
+\begin{document}
+
+\title{Using Infer to find Bugs}
+
+\author{Shane~Magrath\inst{1}}
+
+\institute[DSTG]{\inst{1}Cyber and Electronic Warfare Division\\
+	Defence Science and Technology Group }
+
+\pgfdeclareimage[height=1cm]{institution-logo}{DSTG_logo.jpg}
+
+\logo{\pgfuseimage{institution-logo}}
+
+\date{February 2020}
+
+\setbeamertemplate{footline}{
+	\leavevmode%
+	\hbox{
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%     
+			\usebeamerfont{author in head/foot}shane.magrath@dsto.defence.gov.au
+		\end{beamercolorbox}
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%     
+			\usebeamerfont{author in head/foot}UNCLASSIFIED 
+		\end{beamercolorbox}
+		\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{author in head/foot}%     
+			\usebeamerfont{author in head/foot}\insertframenumber{} / \inserttotalframenumber\hspace*{10ex}
+		\end{beamercolorbox}
+	}%
+}	
+	
+\begin{frame}[plain]
+\maketitle
+\end{frame}
+
+\begin{frame}{Training Outline}
+\begin{itemize}
+	\item Introduction and Overview
+	\item Labs:
+	\begin{itemize}
+		\item Docker and Infer Installation
+		\item Lab One: Basic Infer Usage
+		\item Lab Two: \textbf{Inferbo}: Buffer Overflow Analysis
+		\item Lab Three: \textbf{Quandary}: Static Source-Sink Analysis
+		\item Lab Four: \textbf{Linting with AL}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Training Notes}
+	\begin{itemize}
+		\item Today is self-paced lab directed learning
+		\item Lunch is 12:30 - 1:30 
+		\item All content is available from GitHub from the user "DSTCyber"
+		\item WiFi is available: 
+		\item Feedback Welcome: email me 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Purpose of Today}
+	What is the goal of today?
+	\begin{itemize}
+		\item Introduction to static analysis for finding bugs
+		\item Practical experience with a useful tool
+		\item Equip you with one more skill
+		\item Have you develop \textit{realistic expectations} of what Infer can do
+	\end{itemize}
+	We will be auditing three games that were developed in C - Angband, Skynet and BSD Games.
+\end{frame}
+
+\include{Infer}
+\include{Demonstration}
+
+\end{document}
