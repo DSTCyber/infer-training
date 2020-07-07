@@ -25,15 +25,15 @@ mkdir ./lab
 sudo apt install docker.io
 sudo usermod -aG docker ${USER}
 su - ${USER}
-git clone https://github.com/smagrath/infer-training
+git clone https://github.com/DSTCyber/infer-training
 cd infer-training
 
-# Build a docker image from the Dockerfile in sub-dir ```lab```
+# Build a docker image from the Dockerfile in sub-dir `lab`
 # Tag it infer-training 
 docker build -t infer-training .
 
 # Create a new container based on the image above 
-# mount the host sub-dir ```content``` into the container 
+# mount the host sub-dir `content` into the container 
 docker create -it -v `pwd`/lab:/root/lab --name infer infer-training
 
 # Boot the container
@@ -92,7 +92,7 @@ from scratch for the purpose of being analysed by Infer.
 Infer uses Clang and therefore the targets must be buildable with Clang.
 Moreover Infer hooks several build tools such as \verb|make|, however
 it can take a bit of effort to get Infer to work with tools like \verb|CMake|.
-We look at how this down in TODO.
+We look at how this down in the appendix.
 
 In practice you should not under-estimate how much effort is required to 
 properly prepare a target for Infer. Your goal is to maximise analysis

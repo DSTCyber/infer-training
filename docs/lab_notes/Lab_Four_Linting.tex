@@ -6,7 +6,7 @@ and should be replaced with a more robust string copy method.
 Searching for uses of this function is linting.
 
 Infer has a robust linting capability. It uses a domain specific language
-called "AL" which is very advanced. We are only going to cover the surface 
+called ``AL'' which is very advanced. We are only going to cover the surface 
 of what you can do with AL. In particular, you should look at the fairly
 extensive documentation on AL here: \verb|https://fbinfer.com/docs/linters.html|
 and at the linters that come with Infer by default - from the root of the Infer installation  
@@ -16,7 +16,7 @@ find them as follows:  \verb|find . -name "*.al"|.
 
 In this section we are going to create a very simple linter using AL 
 to find the unsafe functions \verb|atoi()| and \verb|strcpy()|. 
-These are just to obvious choices of potentially many functions you would want to audit.
+These are just two obvious choices of potentially many functions you would want to audit.
 
 \begin{itemize}
 	\item Create the following file: \verb|mylinter.al|
@@ -61,7 +61,7 @@ Create a HTML report and have look at some of the traces.
 AL is a pattern matching language that operates on Clang's \textit{Abstract Syntax Tree} (AST).
 The type of pattern matching is called \textit{Computational Tree Logic} (CTL).
 CTL is a way of specifying pattern matching on tree structures. 
-See "AL Formulas" at \verb|https://fbinfer.com/docs/linters.html| for a detailed 
+See ``AL Formulas'' at \verb|https://fbinfer.com/docs/linters.html| for a detailed 
 description of how to do this.
 
 The AST is a tree of the syntactic structure of the compiled source code produced by Clang.
@@ -87,7 +87,8 @@ DEFINE-CHECKER UNSAFE_FUNCTION_USAGE = {
 	SET report_when =
 		isstrcpy;
 	SET message = "Unsafe function usage - strcpy()";
-	SET suggestion = "See Reference - TODO";
+	SET suggestion = "See Reference - Please read:
+	https://stackoverflow.com/questions/41869803/what-is-the-best-alternative-to-strncpy";
 	SET severity = "ERROR";
 };
 \end{verbatim}
@@ -186,7 +187,7 @@ we are interested is highlighted. Study this closely and note the following:
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=\linewidth]{img/clang-ast}
+	\includegraphics[width=\linewidth]{./img/clang-ast}
 	\caption[AST]{AST Screen shot}
 	\label{fig:clang-ast}
 \end{figure}
@@ -211,7 +212,8 @@ DEFINE-CHECKER UNSAFE_SNPRINTF_ACCUMMULATION = {
         issnprintf AND isaccum
     HOLDS-EVENTUALLY;
     SET message = "Possible Unsafe pointer accummulation using snprintf()";
-    SET suggestion = "See Reference - TODO";
+    SET suggestion = "See Reference - See 
+    https://access.redhat.com/blogs/766093/posts/1976193";
     SET severity = "ERROR";
 };
 \end{verbatim}
@@ -224,7 +226,7 @@ Note the following:
 	\item We specifically select for \verb|CompoundAssignOperator| nodes in the AST.
 	\item The particular tree pattern we want is where the call function is a child 
 	of the \verb|CompoundAssignOperator| node. We can do this with the \verb|HOLDS-EVENTUALLY|
-	CTL operator. Refer to the "AL Formulas" section of\\
+	CTL operator. Refer to the ``AL Formulas'' section of\\
 	 \verb|https://fbinfer.com/docs/linters.html|. 
 	In practice when developing linters you will need to become proficient with these formulas
 	and linter debugging.
@@ -286,7 +288,7 @@ which Infer can then use.
 	\verb|# infer capture -- make|\\
 	\verb|# infer analyze|\\
 	\verb|# infer explore --html|\\
-	Note: The Infer "run" mode is simply the "capture \& analyze" modes;
+	Note: The Infer ``run'' mode is simply the ``capture \& analyze'' modes;
 	
 \end{enumerate}
 
